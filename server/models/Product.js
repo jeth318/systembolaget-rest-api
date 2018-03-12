@@ -28,7 +28,7 @@ const ProductSchema = new mongoose.Schema({
     etiskt: Boolean,
     koscher: Boolean
 });
-mongoose.model('Product', ProductSchema, 'articles');
+mongoose.model('Product', ProductSchema, 'products');
 
 module.exports = mongoose.model('Product');
 

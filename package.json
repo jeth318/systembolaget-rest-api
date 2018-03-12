@@ -15,8 +15,15 @@
     "cookie-parser": "^1.4.3",
     "dotenv": "^5.0.1",
     "express": "^4.16.2",
+    "lodash": "^4.17.5",
     "jsonwebtoken": "^8.2.0",
-    "mongoose": "^5.0.1"
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "sha256": "^0.2.0",
+    "mongoose": "^5.0.1",
+    "fetch": "^1.1.0",
+    "fs": "0.0.1-security",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {}
 }

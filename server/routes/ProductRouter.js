@@ -15,7 +15,6 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 /******************************************************/
 
-
 /* ROUTES */
 // get - RETURN ALL PRODUCTS
 router.get('/', productCtrl.GetAll);
@@ -23,10 +22,10 @@ router.get('/', productCtrl.GetAll);
 // get - RETURN ONE PRODUCT
 router.get('/:id', productCtrl.GetOne);
 
+// post - RETURN COLLECTION MATCHING SEARCH CRITERIA
 router.post('/custom', productCtrl.GetCustom);
 
 // get - UPDATE ALL PRODUCTS
-router.get('/update', authCtrl.VerifyToken, productCtrl.Update);
-
+router.post('/update', authCtrl.VerifyToken, productCtrl.Update);
 
 module.exports = router;

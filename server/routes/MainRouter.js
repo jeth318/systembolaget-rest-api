@@ -1,3 +1,5 @@
+// MainRouter.js
+
 /* CONFIG & IMPORTS */
 var express = require('express');
 var router = express.Router();
@@ -13,6 +15,7 @@ router.use(bodyParser.json());
 /******************************************************/
 
 /* ROUTES */
+
 router.get('/', mainCtrl.Main);
 router.get('/funny', mainCtrl.Funny);
 

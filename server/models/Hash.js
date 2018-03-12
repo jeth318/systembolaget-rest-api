@@ -4,6 +4,6 @@ const HashSchema = mongoose.Schema({
     hash: String,
     updatedAt: Date,
 });
-mongoose.model('Product', ProductSchema);
+mongoose.model('Hash', HashSchema, 'hashs');
 
 module.exports = mongoose.model('Hash');

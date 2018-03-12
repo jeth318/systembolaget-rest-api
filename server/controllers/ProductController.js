@@ -1,6 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var Product = require('../models/Product');
+var Hash = require('../models/Hash');
+const _ = require("lodash");
+const parseString = require("xml2js").parseString;
+const fs = require("fs");
+var rp = require("request-promise");
+var sha = require("sha256");
 
 
 // RETURNS ALL THE USERS IN THE DATABASE
@@ -48,10 +54,47 @@ function Remove (req, res) {
 
 // UPDATES ALL PRODUCTS IN THE DATABASE
 function Update(req, res) {
-    Product.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, product) {
-        if (err) return res.status(500).send("There was a problem updating the product.");
-        res.status(200).send(product);
-    });
+
+    const url = `https://www.systembolaget.se/api/assortment/products/xml`
+    let firstLevel = 'artiklar';
+    let secondLevel = 'artikel';
+    let backup = {};
+
+    var p1 = Product.find({});
+    var p2 = rp(url);
+    var p3 = Hash.findOne({'type': 'products'})
+    var p4 = Product.remove({});
+
+    Promise.all([p1,p2,p3])
+    .then((data)=>{
+        const oldProducts = data[0];
+        const newProducts = data[1];
+        const storedHash  = data[2];
+
+        if(sha(newProducts) === storedHash){
+            return res.status(200).send('No need to update!');
+        } else {
+            console.log('RP STARTED')
+            return rp(url);
+        }
+    })
+    .then((xmlString)=>{
+        const options = { explicitArray: false, normalizeTags: true, attrkey: "attr" };
+        return new Promise((resolve, reject)=>{
+            parseString(xmlString, options, function(err, jsonParsed) {
+                err ? reject(err) : resolve(jsonParsed[firstLevel][secondLevel])
+              });
+        })
+        
+    })
+    .then((parsedXml)=>{
+        return Product.insertMany(parsedXml);
+    })
+    .then(()=>{
+        return Hash.findOneAndUpdate({'type': 'products'}, { hash: sha(newProducts) })
+    })
+    .then(()=>res.status(200).send('Update complete!'))
+    .catch((err)=>res.status(500).send("There was a problem updating the products. " + err))    
 }
 
 module.exports = { GetAll, GetOne, Remove, Update, GetCustom, }

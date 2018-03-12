@@ -14,7 +14,6 @@ router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 /******************************************************/
 
-
 /* ROUTES */
 // post - REGISTER NEW USER
 router.post('/register', authCtrl.Register);
@@ -24,7 +23,5 @@ router.post('/login', authCtrl.Login);
 
 // get - RETURN LOGGED IN USER
 router.get('/me', authCtrl.VerifyToken, authCtrl.Me);
-
-
 
 module.exports = router;
