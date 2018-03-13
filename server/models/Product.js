@@ -1,8 +1,8 @@
 var mongoose = require('mongoose');  
 const ProductSchema = new mongoose.Schema({
-    nr: String,
-    artikelid: String,
-    varnummer: String,
+    nr: Number,
+    artikelid: Number,
+    varnummer: Number,
     namn: String,
     namn2: String,
     prisinklmoms: Number,
@@ -19,14 +19,15 @@ const ProductSchema = new mongoose.Schema({
     ursprunglandnamn: String,
     producent: String,
     leverantor: String,
-    argang: String,
+    argang: Number,
     provadargang:  String,
-    alkoholhalt: String,
+    alkoholhalt: Number,
     sortiment: String,
     sortimentText: String,
     ekologisk: Boolean,
     etiskt: Boolean,
-    koscher: Boolean
+    koscher: Boolean,
+    ravarorbeskrivning: String
 });
 mongoose.model('Product', ProductSchema, 'products');
 

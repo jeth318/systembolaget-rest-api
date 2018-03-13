@@ -1,4 +1,4 @@
-// MainRouter.js
+// StoreRouter.js
 
 /* CONFIG & IMPORTS */
 var express = require('express');
@@ -6,7 +6,8 @@ var router = express.Router();
 var dotenv = require('dotenv').config();
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var mainCtrl = require('../controllers/MainController');
+var storeCtrl = require('../controllers/storeController');
+var authCtrl = require('../controllers/authController');
 /******************************************************/
 
 /* MIDDLEWARE */
@@ -15,9 +16,16 @@ router.use(bodyParser.json());
 /******************************************************/
 
 /* ROUTES */
+// get - RETURN ALL STORES
+router.get('/', storeCtrl.GetAll);
 
-router.get('/', mainCtrl.Main);
-router.get('/funny', mainCtrl.Funny);
+// get - RETURN ONE STORE
+router.get('/:id', storeCtrl.GetOne);
 
-  
+// post - RETURN COLLECTION MATCHING SEARCH CRITERIA
+router.post('/custom', storeCtrl.GetCustom);
+
+// get - UPDATE ALL STORES
+router.post('/update', authCtrl.VerifyToken, storeCtrl.Update);
+
 module.exports = router;

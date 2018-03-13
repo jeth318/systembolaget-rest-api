@@ -89,7 +89,7 @@ function Update(req, res) {
         return Product.remove({})
           .then(() => {
             console.log('Inserting new products...')
-            return Product.insertMany(parsedXml)
+            return Product.insertMany(prettyProducts(parsedXml))
           })
           .then(() => {
             console.log('Updating hash... ');
@@ -109,6 +109,13 @@ function Update(req, res) {
       console.error(err);
       return res.status(500).json({error: "There was a problem updating the products. ", explanation: err})
     })
+}
+
+function prettyProducts(productCollection){
+  return _.map(productCollection, (product)=>{
+    product.alkoholhalt = product.alkoholhalt.slice(0, -1);
+    return product;
+  })
 }
 
 module.exports = { GetAll, GetOne, Remove, Update, GetCustom }

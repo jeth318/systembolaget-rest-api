@@ -19,7 +19,7 @@ app.use('/api/auth', AuthRouter);
 var ProductRouter = require('./routes/ProductRouter');
 app.use('/products', ProductRouter);
 
-var MainRouter = require('./routes/MainRouter');
-app.use('/main', MainRouter);
+var StoreRouter = require('./routes/StoreRouter');
+app.use('/stores', StoreRouter);
 
 module.exports = app;
