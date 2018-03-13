@@ -33,7 +33,7 @@ function Register(req, res) {
       var passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
       if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
       var token = jwt.sign({ id: user._id }, config.secret, {
-        expiresIn: 3600 // expires in 24 hours
+        expiresIn: 900000 // expires in 24 hours
       });
         res.cookie('token', token, { maxAge: 900000, httpOnly: true })      
       res.status(200).send({ auth: true, token: token, decoded: jwt.decode(token) });

@@ -14,13 +14,13 @@ var sha = require("sha256");
 function GetAll(req, res) {
   Product.find({}, function (err, products) {
     if (err) return res.status(500).send("There was a problem finding the products." + err);
-    res.status(200).send(products);
+    res.status(200).json({products});
   });
 }
 
 // RETURNS CUSTOM PRODUCTS FROM THE DATABASE
 function GetCustom(req, res) {
-
+  console.log(req.body);
   let customQuery = {};
   Object.keys(req.body).forEach(function (prop) {
     customQuery[prop] = new RegExp(".*" + req.body[prop] + ".*");
@@ -39,7 +39,7 @@ function GetOne(req, res) {
   Product.findById(req.params.id, function (err, product) {
     if (err) return res.status(500).send("There was a problem finding the product." + err);
     if (!product) return res.status(404).send("No product found.");
-    res.status(200).send(product);
+    res.status(200).json({product});
   });
 }
 
@@ -47,7 +47,7 @@ function GetOne(req, res) {
 function Remove(req, res) {
   Product.findByIdAndRemove(req.params.id, function (err, product) {
     if (err) return res.status(500).send("There was a problem deleting the product." + err);
-    res.status(200).send("Product: " + product.name + " was deleted.");
+    res.status(200).json({message: "Product: " + product.name + " was deleted."});
   });
 }
 
@@ -57,32 +57,31 @@ function Update(req, res) {
 
   const url = `https://www.systembolaget.se/api/assortment/products/xml`
   let backup = {};
-  var mockResponse = require('./mockResponse');
-  var p1 = Product.find({});
-  var p2 = rp(url);
-  var p3 = Hash.findOne({ 'type': 'products' })
-  var p4 = Product.remove({});
-  var oldProducts, newProducts, storedHash;
+  let oldProducts, newProducts, storedHash;
+  const p1 = Product.find({});
+  const p2 = rp(url);
+  const p3 = Hash.findOne({ 'type': 'products' })
 
-  Promise.all([p1, p2, p3, p4])
+  Promise.all([p1, p2, p3])
     .then((data) => {
       console.log('All initial promises resolved')
       oldProducts = data[0];
       newProducts = data[1];
       storedHash = data[2].hash;
-
+    
       const options = { explicitArray: false, normalizeTags: true, attrkey: "attr" };
       return new Promise((resolve, reject) => {
         console.log('Parsing XML...')
-        parseString(newProducts, options, function (err, jsonParsed) {
+        parseString(newProducts, options, function (err, parsedData) {
           console.log('Done parsing XML...')
-          err ? reject(err) : resolve(jsonParsed)
+          err ? reject(err) : resolve(parsedData)
         });
       })
     })
-    .then((result) => {
-      const parsedXml = result.artiklar.artikel;
+    .then((parseResult) => {
+      const parsedXml = parseResult.artiklar.artikel;
       console.log('Checking hash...')
+      // Compares hash of new products to current stored hash. Ignores update if match.
       if (sha(parsedXml) === storedHash) {
         return 'No need to update';
       } else {
@@ -102,11 +101,13 @@ function Update(req, res) {
           })
         }
     })
-    .then((successMessage) => {
-      console.log(successMessage); return res.status(200).send(successMessage)
+    .then((message) => {
+      console.log(message); 
+      return res.status(200).json({message})
     })
     .catch((err) => {
-      return res.status(500).send("There was a problem updating the products. " + err)
+      console.error(err);
+      return res.status(500).json({error: "There was a problem updating the products. ", explanation: err})
     })
 }
 
