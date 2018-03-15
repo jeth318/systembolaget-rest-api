@@ -22,8 +22,12 @@ const StoreSchema = mongoose.Schema({
         }
     ],
     location: {
-        rt90x: Number,
-        rt90y: Number
+        lat: String,
+        lng: String,
+    },
+    locationRT90: {
+        rt90x: String,
+        rt90y: String
     }
 });
 
