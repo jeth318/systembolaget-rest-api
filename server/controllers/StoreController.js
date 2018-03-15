@@ -93,7 +93,7 @@ function Update(req, res) {
       
       console.log('Checking hash...')
       // Compares hash of new stores to current stored hash. Ignores update if match.
-      if (sha(parsedXml) !== storedHash) {
+      if (sha(parsedXml) === storedHash) {
         return 'No need to update';
       } else {
         console.log('Removing current stores...')

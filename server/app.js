@@ -22,4 +22,7 @@ app.use('/products', ProductRouter);
 var StoreRouter = require('./routes/StoreRouter');
 app.use('/stores', StoreRouter);
 
+var StockRouter = require('./routes/StockRouter');
+app.use('/stocks', StockRouter);
+
 module.exports = app;
