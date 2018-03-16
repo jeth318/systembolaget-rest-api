@@ -114,16 +114,33 @@ function Update(req, res) {
 }
 
 function Availability(req, res) {
-  console.log(req.body)
-  if (!req.body.store_id || !req.body.product_id) {
+  //console.log(req.body)
+  if (!req.body.store_nr || !req.body.product_nr) {
     return res.status(500).json({ error: "There was a problem checking availibility. Check your params." })
   }
-  const store_id = req.body.store_id;
-  const product_id = req.body.product_id;
-  return Stock.findOne({})
-    .then((store) => {
-      return res.status(200).json({ availible: _.includes(store.availableProducts, product_id) });
-    })
+
+  const store_nr = req.body.store_nr;
+  const product_nr = req.body.product_nr;
+  const full_response = req.body.full_response;
+
+  if (!full_response) {
+    Stock.findOne({ store_id: store_nr })
+      .then((store) => {
+        return res.status(200).json({store: store_nr, product: product_nr, availible: _.includes(store.availableProducts, product_nr) });
+      })
+      .catch((err) => console.log(err))
+  } else {
+    return Stock.find({})
+      .then((stocks) => {
+        const storesInStock = _.map(stocks, (stock) => {
+          if (stock.availableProducts[product_nr] > 0) {
+            return stock.store_id;
+          }
+        })
+        return res.status(200).json({product: product_nr, storesWhereAvailible: storesInStock});
+      })
+      .catch((err) => console.log({ error: "There was a problem checking availibility. Check your params.", explanation: err }))
+  }
 }
 
 

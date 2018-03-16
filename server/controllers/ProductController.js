@@ -114,6 +114,7 @@ function Update(req, res) {
 function prettyProducts(productCollection){
   return _.map(productCollection, (product)=>{
     product.alkoholhalt = product.alkoholhalt.slice(0, -1);
+    product.id = product.nr;
     return product;
   })
 }

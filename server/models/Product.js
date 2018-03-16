@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');  
 const ProductSchema = new mongoose.Schema({
-    nr: Number,
+    id: String,
     artikelid: Number,
     varnummer: Number,
     namn: String,
     namn2: String,
     prisinklmoms: Number,
     volymiml: Number,
-    prisPerLiter: Number,
+    perperliter: Number,
     saljstart: Date,
     utgått: Boolean,
     varugrupp: String,
