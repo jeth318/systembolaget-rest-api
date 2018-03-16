@@ -96,7 +96,7 @@ function Update(req, res) {
             return Hash.findOneAndUpdate({ 'type': 'products' }, { hash: sha(parsedXml), updatedAt: new Date() })
           })
           .then(() => {
-            console.log('Hash updated...');
+            console.log('Update completed!');            
             return 'Update completed!'
           })
         }

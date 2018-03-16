@@ -28,4 +28,7 @@ router.post('/custom', stockCtrl.GetCustom);
 // get - UPDATE ALL STOCKS
 router.post('/update', authCtrl.VerifyToken, stockCtrl.Update);
 
+// get - RETURN TRUE || FALSE IF STORE HAS PRODUCT IN STOCK
+router.post('/availability', stockCtrl.Availability);
+
 module.exports = router;

@@ -14,7 +14,7 @@ var sha = require("sha256");
 function GetAll(req, res) {
   Stock.find({}, function (err, stocks) {
     if (err) return res.status(500).send("There was a problem finding the stocks." + err);
-    res.status(200).json({stocks});
+    res.status(200).json({ stocks });
   });
 }
 
@@ -39,7 +39,7 @@ function GetOne(req, res) {
   Stock.findById(req.params.id, function (err, stock) {
     if (err) return res.status(500).send("There was a problem finding the stock." + err);
     if (!stock) return res.status(404).send("No stock found.");
-    res.status(200).json({stock});
+    res.status(200).json({ stock });
   });
 }
 
@@ -47,7 +47,7 @@ function GetOne(req, res) {
 function Remove(req, res) {
   Stock.findByIdAndRemove(req.params.id, function (err, stock) {
     if (err) return res.status(500).send("There was a problem deleting the stock." + err);
-    res.status(200).json({message: "Stock: " + stock.name + " was deleted."});
+    res.status(200).json({ message: "Stock: " + stock.name + " was deleted." });
   });
 }
 
@@ -68,7 +68,7 @@ function Update(req, res) {
       oldStocks = data[0];
       newStocks = data[1];
       storedHash = data[2].hash;
-    
+
       const options = { explicitArray: false, normalizeTags: true, attrkey: "attribute" };
       return new Promise((resolve, reject) => {
         console.log('Parsing XML...')
@@ -82,7 +82,7 @@ function Update(req, res) {
       const parsedXml = parseResult.butikartikel.butik;
 
       console.log('Checking hash...')
-     // console.log(parsedXml);
+      // console.log(parsedXml);
       // Compares hash of new stocks to current stored hash. Ignores update if match.
       if (sha(parsedXml) === storedHash) {
         return 'No need to update';
@@ -98,27 +98,45 @@ function Update(req, res) {
             return Hash.findOneAndUpdate({ 'type': 'stocks' }, { hash: sha(parsedXml), updatedAt: new Date() })
           })
           .then(() => {
-            console.log('Hash updated...');
+            console.log('Update completed!');
             return 'Update completed!'
           })
-        }
+      }
     })
     .then((message) => {
-     // console.log(message); 
-      return res.status(200).json({message})
+      // console.log(message); 
+      return res.status(200).json({ message })
     })
     .catch((err) => {
       console.error(err);
-      return res.status(500).json({error: "There was a problem updating the stocks. ", explanation: err})
+      return res.status(500).json({ error: "There was a problem updating the stocks. ", explanation: err })
     })
 }
 
-function prettyStocks(stockCollection){
-  return _.map(stockCollection, (stock)=>{
+function Availability(req, res) {
+  console.log(req.body)
+  if (!req.body.store_id || !req.body.product_id) {
+    return res.status(500).json({ error: "There was a problem checking availibility. Check your params." })
+  }
+  const store_id = req.body.store_id;
+  const product_id = req.body.product_id;
+  return Stock.findOne({})
+    .then((store) => {
+      return res.status(200).json({ availible: _.includes(store.availableProducts, product_id) });
+    })
+}
+
+
+function prettyStocks(stockCollection) {
+  return _.map(stockCollection, (stock) => {
     let store_id = stock.attribute.ButikNr;
     let availableProducts = stock.artikelnr;
-    return {store_id, availableProducts};
+    return { store_id, availableProducts };
   })
 }
 
-module.exports = { GetAll, GetOne, Remove, Update, GetCustom }
+
+
+// IsProductInStock('0102', '701').then((res)=>console.log(res))
+
+module.exports = { GetAll, GetOne, Remove, Update, GetCustom, Availability }
