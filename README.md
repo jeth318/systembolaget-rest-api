@@ -1,3 +1,5 @@
+<b>DOCUMENTATION</b>
+
 STORES
 
 @GET /stores
@@ -31,13 +33,13 @@ PRODUCTS
 STOCK
 
 @GET /stocks
-    - Returns all products
+    - Returns all stocks
 
 @GET /stocks/:id
-    - Returns one products
+    - Returns one stocks
 
 @POST /stocks/update
-    - Updates all products
+    - Updates all stocks
 
 @POST - /stocks/availiblility
     - Returns true or false depending if product is in stock.
