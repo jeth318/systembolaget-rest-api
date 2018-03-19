@@ -1,21 +1,47 @@
-# nodejs-restful-api
-![RESTful API design with Node.js](https://cdn-images-1.medium.com/max/2000/1*jjYC9tuf4C3HkHCP5PcKTA.jpeg "RESTful API design with Node.js")
+STORES
 
-How to create a RESTful CRUD API using Nodejs?
+@GET /stores
+    - Returns all stores
 
-This tutorial will demo how to set up a bare bones 
-API using mongodb as the database.
+@GET /stores/:id
+    - Returns one store
 
-It consist of a User model and controller. The model
-defines the data, and the controller will contain all 
-the business logic needed to interact with the database. 
+@POST /stores/update
+    - Updates all stores
 
-It has a db file which will be used to
-connect the app to the database, and an app file used
-for bootstrapping the application itself.
+@POST /stores/update/location
+    - Updates coordinates for all stores
 
-The server file is used to spin up the server and tells the
-app to listen on a specific port.
+*********************************************
+PRODUCTS
 
-Full tutorial can be found at:
-https://hackernoon.com/restful-api-design-with-node-js-26ccf66eab09#.s5l66zyeu
+@GET /products
+    - Returns all products
+
+@GET /procucts/:id
+    - Returns one products
+
+@POST /products/update
+    - Updates all products
+
+@POST /products/update/location
+    - Updates coordinates for all products
+
+*********************************************
+STOCK
+
+@GET /stocks
+    - Returns all products
+
+@GET /stocks/:id
+    - Returns one products
+
+@POST /stocks/update
+    - Updates all products
+
+@POST - /stocks/availiblility
+    - Returns true or false depending if product is in stock.
+
+
+
+
