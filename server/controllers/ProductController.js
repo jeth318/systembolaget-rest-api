@@ -14,7 +14,7 @@ var sha = require("sha256");
 function GetAll(req, res) {
   Product.find({}, function (err, products) {
     if (err) return res.status(500).send("There was a problem finding the products." + err);
-    res.status(200).json({products});
+    res.status(200).json(products);
   });
 }
 
@@ -39,7 +39,7 @@ function GetOne(req, res) {
   Product.findById(req.params.id, function (err, product) {
     if (err) return res.status(500).send("There was a problem finding the product." + err);
     if (!product) return res.status(404).send("No product found.");
-    res.status(200).json({product});
+    res.status(200).json(product);
   });
 }
 

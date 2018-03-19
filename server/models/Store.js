@@ -1,4 +1,11 @@
 const mongoose = require('mongoose');
+
+const OpenHourSchema = mongoose.Schema({
+    date: String,
+    opening: String,
+    closing: String,
+},{ _id : false });
+
 const StoreSchema = mongoose.Schema({
     type: String,
     id: String,
@@ -14,13 +21,7 @@ const StoreSchema = mongoose.Schema({
     storeType: String,
     services: String,
     searchTags: [],
-    openHours: [
-        {
-            date: String,
-            opening: String,
-            closing: String,
-        }
-    ],
+    openHours: [OpenHourSchema],
     location: {
         lat: String,
         lng: String,
@@ -30,6 +31,8 @@ const StoreSchema = mongoose.Schema({
         rt90y: String
     }
 });
+
+
 
 mongoose.model('Store', StoreSchema, 'stores');
 

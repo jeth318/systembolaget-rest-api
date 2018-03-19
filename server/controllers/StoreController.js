@@ -43,8 +43,6 @@ function GetCustom(req, res) {
 function GetOne(req, res) {
   Store.findById(req.params.id, function (err, store) {
     if (err) return res.status(500).send("There was a problem finding the store." + err);
-
-    convertToWSG82(store.address);
     if (!store) return res.status(404).send("No store found.");
     res.status(200).json({ store });
   });
