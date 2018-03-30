@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 AUTHORIZATION
 @POST /api/auth/register
     - Register new user
@@ -9,6 +10,7 @@ AUTHORIZATION
     - Return logged in user
 
 *********************************************    
+
 STORES
 
 @GET /stores
@@ -22,6 +24,9 @@ STORES
 
 @POST /stores/update/location
     - Updates coordinates for all stores
+    
+@DELETE /stores/:id
+    - Deletes one store
 
 *********************************************
 PRODUCTS
@@ -34,24 +39,27 @@ PRODUCTS
 
 @POST /products/update
     - Updates all products
-
-@POST /products/update/location
-    - Updates coordinates for all products
+    
+@DELETE /procucts/:id
+    - Deletes one product
 
 *********************************************
 STOCK
 
 @GET /stocks
-    - Returns all products
+    - Returns all stocks
 
 @GET /stocks/:id
-    - Returns one products
+    - Returns one stocks
 
 @POST /stocks/update
-    - Updates all products
+    - Updates all stocks
 
 @POST - /stocks/availiblility
     - Returns true or false depending if product is in stock.
+    
+@DELETE /stocks/:id
+   - Deletes one stock entry
 
 
 
