@@ -1,3 +1,14 @@
+AUTHORIZATION
+@POST /api/auth/register
+    - Register new user
+
+@POST /api/auth/login
+    - Login user
+
+@GET /api/auth/me
+    - Return logged in user
+
+*********************************************    
 STORES
 
 @GET /stores

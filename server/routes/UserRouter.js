@@ -2,9 +2,12 @@ var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
 var userCtrl = require('../controllers/UserController');
+/******************************************************/
 
-router.use(bodyParser.urlencoded({ extended: true }));
+/* MIDDLEWARE */
+router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
+/******************************************************/
 
 // CREATES A NEW USER
 router.post('/', userCtrl.Create);

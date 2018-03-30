@@ -12,8 +12,7 @@ var fetch = require('fetch');
 var request = require('request');
 var limit = require("simple-rate-limiter");
 var googleApiKey = require('../config').googleApiKey;
-
-//console.log(googleApiKey);
+const remoteEndpoint = require('../endpoints');
 
 // RETURNS ALL THE STORES IN THE DATABASE
 function GetAll(req, res) {
@@ -60,11 +59,10 @@ function Remove(req, res) {
 // UPDATES ALL STORES IN THE DATABASE
 function Update(req, res) {
 
-  const url = `https://www.systembolaget.se/api/assortment/stores/xml`
   let backup = {};
   let oldStores, newStores, storedHash;
   const p1 = Store.find({});
-  const p2 = rp(url);
+  const p2 = rp(remoteEndpoint.STORES);
   const p3 = Hash.findOne({ 'type': 'stores' })
 
   Promise.all([p1, p2, p3])
@@ -73,7 +71,7 @@ function Update(req, res) {
 
       oldStores = data[0];
       newStores = data[1];
-      storedHash = data[2].hash;
+      storedHash = data[2] ? data[2].hash : '';
       backup = oldStores;
 
       const options = { explicitArray: false, normalizeTags: true, attrkey: "attr" };
@@ -205,9 +203,7 @@ function formatOpenHours(openHours) {
 
 // Custom google request with rate-limiter. Max allowed API-calls is 40req/s.
 var callGoogleApi = limit(function (store, callback) {
-
-  const googleBaseUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
-  let url = googleBaseUrl;
+  let url = remoteEndpoint.GEOCODE_API;
   url += '?country=SE' // TODO: Use address.country to get correct land code
   url += '&address=' + encodeURIComponent(`${store.address.street},+${store.address.zipCode}+${store.address.city}`)
   url += '&key=' + googleApiKey;

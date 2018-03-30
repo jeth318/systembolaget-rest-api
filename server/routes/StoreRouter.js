@@ -31,4 +31,5 @@ router.post('/update', authCtrl.VerifyToken, storeCtrl.Update);
 // get - UPDATE GOOGLE LOCATION FOR ALL STORES
 router.post('/update/location', authCtrl.VerifyToken, storeCtrl.UpdateLocation);
 
+
 module.exports = router;

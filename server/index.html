@@ -1,85 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script
-    src="https://code.jquery.com/jquery-3.3.1.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-    crossorigin="anonymous"></script>
-    
-    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+
+    <title>Systembolaget-rest-api</title>
 </head>
+
 <body>
-    Hello world
-
-    <form onsubmit="return doLogin(event)">
-        <input type="text" id="user" placeholder="Username"></input>
-        <input type="password" id="pass" placeholder="Password"></input>
-        <input type="submit">Login</input>
-    </form>
-
-    <button onclick="doFunny()">GET COOKIE</button>
+    <div style="display: flex; justify-content: center">
+        <div class="display: flex;">Welcome to Systembolaget-rest-api!</div>
+    </div>
 </body>
+
 </html>
-
-<script type="text/javascript">
-
-    function doLogin(e){
-        e.preventDefault();
-        var username = document.getElementById('user').value;
-        var password = document.getElementById('pass').value;
-
-        fetch('/api/auth/login', {
-            method: 'POST',
-            body: JSON.stringify({email: username, password: password}),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        .catch(error => console.error('Error:', error))
-        .then(response => {
-            console.log(response);
-           if (response.token) {
-               document.cookie = `token=${response.token}`;
-               console.log('Cookie set.')
-           } else {
-               console.log(response);
-           }
-        });
-    }
-
-    function doFunny(){
-        fetch('/main/funny', {
-            method: 'GET',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        .then(res => res.json())
-        .catch(error => console.error('Error:', error))
-        .then(response => {
-            console.log(response);
-        });
-    }
-
-    function getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
-
-</script>

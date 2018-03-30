@@ -8,9 +8,10 @@ const parseString = require("xml2js").parseString;
 const fs = require("fs");
 var rp = require("request-promise");
 var sha = require("sha256");
+const remoteEndpoint = require('../endpoints');
 
 
-// RETURNS ALL THE USERS IN THE DATABASE
+// RETURNS ALL THE STOCKS IN THE DATABASE
 function GetAll(req, res) {
   Stock.find({}, function (err, stocks) {
     if (err) return res.status(500).send("There was a problem finding the stocks." + err);
@@ -18,7 +19,7 @@ function GetAll(req, res) {
   });
 }
 
-// RETURNS CUSTOM PRODUCTS FROM THE DATABASE
+// RETURNS CUSTOM STOCKS FROM THE DATABASE
 function GetCustom(req, res) {
   // console.log(req.body);
   let customQuery = {};
@@ -34,7 +35,7 @@ function GetCustom(req, res) {
 
 }
 
-// GETS A SINGLE USER IN THE DATABASE
+// GETS A SINGLE STOCK IN THE DATABASE
 function GetOne(req, res) {
   Stock.findById(req.params.id, function (err, stock) {
     if (err) return res.status(500).send("There was a problem finding the stock." + err);
@@ -43,7 +44,7 @@ function GetOne(req, res) {
   });
 }
 
-// DELETES A PRODUCT FROM THE DATABASE
+// DELETES A STOCK FROM THE DATABASE
 function Remove(req, res) {
   Stock.findByIdAndRemove(req.params.id, function (err, stock) {
     if (err) return res.status(500).send("There was a problem deleting the stock." + err);
@@ -52,14 +53,13 @@ function Remove(req, res) {
 }
 
 
-// UPDATES ALL PRODUCTS IN THE DATABASE
+// UPDATES ALL STOCKS IN THE DATABASE
 function Update(req, res) {
 
-  const url = `https://www.systembolaget.se/api/assortment/stock/xml`
   let backup = {};
   let oldStocks, newStocks, storedHash;
   const p1 = Stock.find({});
-  const p2 = rp(url);
+  const p2 = rp(remoteEndpoint.STOCKS);
   const p3 = Hash.findOne({ 'type': 'stocks' })
 
   Promise.all([p1, p2, p3])
@@ -67,7 +67,7 @@ function Update(req, res) {
       console.log('All initial promises resolved')
       oldStocks = data[0];
       newStocks = data[1];
-      storedHash = data[2].hash;
+      storedHash = data[2] ?  data[2].hash : '';
 
       const options = { explicitArray: false, normalizeTags: true, attrkey: "attribute" };
       return new Promise((resolve, reject) => {
@@ -122,7 +122,7 @@ function Availability(req, res) {
   const store_nr = req.body.store_nr;
   const product_nr = req.body.product_nr;
   const full_response = req.body.full_response;
-
+  
   if (!full_response) {
     Stock.findOne({ store_id: store_nr })
       .then((store) => {
@@ -133,7 +133,10 @@ function Availability(req, res) {
     return Stock.find({})
       .then((stocks) => {
         const storesInStock = _.map(stocks, (stock) => {
+          console.log(stock)
+
           if (stock.availableProducts[product_nr] > 0) {
+            console.log('HELLO')
             return stock.store_id;
           }
         })

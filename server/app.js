@@ -12,7 +12,6 @@ app.get('/', (req, res)=>{
 var UserRouter = require('./routes/UserRouter');
 app.use('/users', UserRouter);
 
-// app.js
 var AuthRouter = require('./routes/AuthRouter');
 app.use('/api/auth', AuthRouter);
 
