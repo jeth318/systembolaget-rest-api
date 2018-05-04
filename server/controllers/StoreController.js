@@ -29,7 +29,6 @@ function GetCustom(req, res) {
   Object.keys(req.body).forEach(function (prop) {
     customQuery[prop] = new RegExp(".*" + req.body[prop] + ".*");
   });
-
   Store.find(customQuery, function (err, stores) {
     if (err) return res.status(500).send("There was a problem finding the stores." + err);
     res.status(200).send(stores);
@@ -120,18 +119,42 @@ function Update(req, res) {
       Store.insertMany(backup);
       return res.status(500).json({ error: "There was a problem updating the stores. Restored db from backup.", err })
     })
-
 }
 
-function UpdateLocation(req, res) {
+  function doCall(store) {
+      return new Promise(resolve => {
+          setTimeout(() => {
+              resolve(fetchData(store))
+          }, 1000);
+       });
+    }
+  
+  function fetchData (store) {
+    const googleBaseUrl = 'https://maps.googleapis.com/maps/api/geocode/json';
+    let url = googleBaseUrl;
+      url += '?country=SE' // TODO: Use address.country to get correct land code
+      url += '&address=' + encodeURIComponent(`${store.address.street},+${store.address.zipCode}+${store.address.city}`)
+      url += '&key=' + googleApiKey;
+      url += '&v=3';
+      return request(url);
+  }
+
+
+ function UpdateLocation(req, res) {
   var backup = [];
   var newStores = [];
   Store.find({}, (err, stores) => {
     backup = stores;
-    const promises = _.map(stores, (store) => {
-      return new Promise((resolve, reject) => {
-        callGoogleApi(store, function (err, response, body) {
-          if (err) { reject(err) }
+    const promises = _.map(stores, (store)=>{
+      return new Promise((resolve, reject)=>{
+        doCall(store)
+        .then((res)=>res.json())
+        .then((finalRes)=>{
+          console.log(finalRes);
+        })
+       
+        /* callGoogleApi(store, function(err, response, body){
+          if (err) {reject(err)}
           const finalRes = JSON.parse(body);
           if (finalRes.results[0]) {
             console.log(finalRes.results[0])
@@ -139,22 +162,22 @@ function UpdateLocation(req, res) {
             store.location.lng = finalRes.results[0].geometry.location.lng;
           }
           resolve(store)
-        });
+        }); */
       })
     });
 
     Promise.all(promises)
-      .then((output) => {
-        console.log(output);
-        newStores = output;
-        return Store.remove({})
-      })
-      .then(() => { return Store.insertMany(newStores) })
-      .then(() => res.status(200).json({ message: 'Location update successful' }))
-      .catch(() => {
-        Store.insertMany(backup);
-        res.status(500).json({ error: 'Failed to update locations. Restore db from backup', explanation: err })
-      })
+    .then((output)=>{
+      console.log(output);
+      newStores = output;
+      return Store.remove({})
+    })
+    .then(()=>Store.insertMany(newStores))
+    .then(()=>res.status(200).json({message: 'Location update successful'}))
+    .catch(()=>{
+      Store.insertMany(backup);
+      res.status(500).json({error: 'Failed to update locations. Restore db from backup', explanation: err})
+    })
   })
 }
 
