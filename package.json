@@ -21,7 +21,7 @@
     "fetch": "^1.1.0",
     "fs": "0.0.1-security",
     "jsonwebtoken": "^8.2.0",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.13",
     "mongoose": "^5.0.1",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
