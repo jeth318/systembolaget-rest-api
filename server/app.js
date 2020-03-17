@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+var cors = require('cors');
+app.use(cors());
 var db = require('./db');
 var cookieParser = require('cookie-parser')
 

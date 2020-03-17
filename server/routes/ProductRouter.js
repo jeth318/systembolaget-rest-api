@@ -25,10 +25,13 @@ router.get('/:id', productCtrl.GetOne);
 // post - RETURN COLLECTION MATCHING SEARCH CRITERIA
 router.post('/custom', productCtrl.GetCustom);
 
+// post - RETURN COLLECTION MATCHING SEARCH CRITERIA
+router.get('/image/:id', productCtrl.GetImage);
+
 // get - RETURN ONE PRODUCT
 router.delete('/:id', productCtrl.Remove);
 
 // get - UPDATE ALL PRODUCTS
-router.post('/update', authCtrl.VerifyToken, productCtrl.Update);
+router.post('/update', productCtrl.Update);
 
 module.exports = router;

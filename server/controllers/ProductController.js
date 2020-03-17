@@ -9,6 +9,7 @@ const fs = require("fs");
 var rp = require("request-promise");
 var sha = require("sha256");
 const remoteEndpoint = require('../endpoints');
+const axios = require('axios');
 
 
 // RETURNS ALL THE USERS IN THE DATABASE
@@ -22,9 +23,11 @@ function GetAll(req, res) {
 // RETURNS CUSTOM PRODUCTS FROM THE DATABASE
 function GetCustom(req, res) {
   console.log(req.body);
+  
+  console.log(req.body);
   let customQuery = {};
   Object.keys(req.body).forEach(function (prop) {
-    customQuery[prop] = new RegExp(".*" + req.body[prop] + ".*");
+    customQuery[prop] = new RegExp((".*" + req.body[prop] + ".*"), "i");
   });
 
   Product.find(customQuery, function (err, products) {
@@ -52,6 +55,29 @@ function Remove(req, res) {
   });
 }
 
+// GETS A PRODUCT IMAGE
+async function GetImage(req, res) {
+    if (!req.params.id) {
+        return res.status(200).json({ message: 'Request OK but no image found for provided id' });
+    }
+    const config = {
+        url: 'https://www.systembolaget.se/api/product/GetProductsForAnalytics',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: JSON.stringify({ ProductNumbers:[req.params.id.toString()]})
+    }
+
+    try {
+        const response = await axios(config);
+        return res.status(200).json({imageUrl: response.data.Products[0].ImageItem[0].ImageUrl})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: error })
+    }
+  }
+
 
 // UPDATES ALL PRODUCTS IN THE DATABASE
 function Update(req, res) {
@@ -68,12 +94,16 @@ function Update(req, res) {
       oldProducts = data[0];
       newProducts = data[1];
       storedHash = data[2] ? data[2].hash : '';
+
+      console.log(newProducts);
+      
     
       const options = { explicitArray: false, normalizeTags: true, attrkey: "attr" };
       return new Promise((resolve, reject) => {
         console.log('Parsing XML...')
         parseString(newProducts, options, function (err, parsedData) {
           console.log('Done parsing XML...')
+          console.log(parsedData)
           err ? reject(err) : resolve(parsedData)
         });
       })
@@ -128,4 +158,4 @@ function errorHandler(res, thrownError, customMessage){
   return res.status(500).json({error: description, explanation: thrownError})
 }
 
-module.exports = { GetAll, GetOne, Remove, Update, GetCustom }
+module.exports = { GetAll, GetOne, Remove, Update, GetCustom, GetImage }

@@ -59,7 +59,10 @@ function Update(req, res) {
   let backup = {};
   let oldStocks, newStocks, storedHash;
   const p1 = Stock.find({});
-  const p2 = rp(remoteEndpoint.STOCKS);
+  
+  console.log(remoteEndpoint.STOCK);
+  
+  const p2 = rp(remoteEndpoint.STOCK);
   const p3 = Hash.findOne({ 'type': 'stocks' })
 
   Promise.all([p1, p2, p3])
@@ -74,12 +77,15 @@ function Update(req, res) {
         console.log('Parsing XML...')
         parseString(newStocks, options, function (err, parsedData) {
           console.log('Done parsing XML...')
+        console.log('RÖV');
+
           err ? reject(err) : resolve(parsedData)
         });
       })
     })
     .then((parseResult) => {
       const parsedXml = parseResult.butikartikel.butik;
+      console.log('RÖV');
 
       console.log('Checking hash...')
       // console.log(parsedXml);
@@ -134,7 +140,7 @@ function Availability(req, res) {
       .then((stocks) => {
         const storesInStock = _.map(stocks, (stock) => {
           console.log(stock)
-
+          
           if (stock.availableProducts[product_nr] > 0) {
             console.log('HELLO')
             return stock.store_id;
