@@ -7,6 +7,7 @@ else
 	exit 0;
 fi
 
+
 echo "Stashing lock files "
 git stash
 
