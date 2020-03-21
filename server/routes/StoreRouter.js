@@ -6,8 +6,8 @@ var router = express.Router();
 var dotenv = require('dotenv').config();
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var storeCtrl = require('../controllers/storeController');
-var authCtrl = require('../controllers/authController');
+var storeCtrl = require('../controllers/StoreController');
+var authCtrl = require('../controllers/AuthController');
 /******************************************************/
 
 /* MIDDLEWARE */
