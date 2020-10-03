@@ -23,7 +23,7 @@
     "fetch": "^1.1.0",
     "fs": "0.0.1-security",
     "jsonwebtoken": "^8.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "mongoose": "^5.9.5",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
